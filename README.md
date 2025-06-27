@@ -12,7 +12,7 @@ To train on a specific map you can using this command
 Or multi map
 ```python my_dqqn.py -ss -t -mm -d save_model -lv 1-1 5-1 7-4```.
 
-After training, you can play game with model by this command
+After training, you can play game with the model by this command
 ```python my_ddqn.py -ss -s -d save_model -mn <your model name>```
 or ```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
 
