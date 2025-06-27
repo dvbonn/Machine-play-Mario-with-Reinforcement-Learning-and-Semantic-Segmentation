@@ -16,7 +16,7 @@ After training, you can play game with model by this command
 ```python my_ddqn.py -ss -s -d save_model -mn <your model name>```
 or ```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
 
-Tested on python 3.11
+Tested on python 3.11.
 
 # **About project**
 Our project focused on how to train a RL agent using SS output as input for RL, so we do not cover training the SS model in this project. 
