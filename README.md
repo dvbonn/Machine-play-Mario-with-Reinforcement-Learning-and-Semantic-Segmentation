@@ -1,12 +1,12 @@
 # **How to use**
-First you need to download [ResNet50.pth](https://drive.google.com/file/d/1JRdPggs5jTWAXKRXk6hVxzmP-KnOr8Hw/view) and place it in the Segmentation_model folder.
+First, you need to download [ResNet50.pth](https://drive.google.com/file/d/1JRdPggs5jTWAXKRXk6hVxzmP-KnOr8Hw/view) and place it in the Segmentation_model folder.
 
-After that install requirements.txt.
+After that, install requirements.txt.
 
-Then you can train by simple command like
+Then, you can train by a simple command like
 ```python my_ddqn.py -ss -t -d save_model```.
 
-To train on specific map you can using this command
+To train on a specific map you can using this command
 ```python my_ddqn.py -ss -t -d save_model -lv 5-1```.
 
 Or multi map
