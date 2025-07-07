@@ -18,6 +18,17 @@ or ```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7
 
 Tested on python 3.11.
 
+## Data Comparison Chart
+
+To visualize and compare training results between different models or maps, use the script `Log_perform/perform_chart.py`.
+
+### Usage
+
+1. Place your log files (e.g., `7_4_DDQN_TL.txt`, `5_1_DQN_TL.txt`, etc.) in the `Log_perform/` directory.
+2. Open a terminal in this directory and run:
+   ```bash
+   python perform_chart.py
+
 # **About project**
 Our project focused on how to train a RL agent using SS output as input for RL, so we do not cover training the SS model in this project. 
 
