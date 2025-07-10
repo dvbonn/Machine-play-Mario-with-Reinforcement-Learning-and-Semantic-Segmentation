@@ -377,11 +377,11 @@ def run():
             if elapsed_time >= checkpoint_seconds[last_checkpoint]:
                 checkpoint_name = f"checkpoint_{checkpoint_hours[last_checkpoint]}h.pt"
                 if args.transfer_learning is True:
-                    torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn1_" + checkpoint_name)
-                    torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn2_" + checkpoint_name)
+                    torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_1_" + checkpoint_name)
+                    torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_2_" + checkpoint_name)
                 else:
-                    torch.save(agent.local_net.state_dict(),args.dir+ "/ddqn1_" + checkpoint_name)
-                    torch.save(agent.target_net.state_dict(),args.dir+ "/ddqn2_" + checkpoint_name)
+                    torch.save(agent.local_net.state_dict(),args.dir+ "/ddqn_adv_1_" + checkpoint_name)
+                    torch.save(agent.target_net.state_dict(),args.dir+ "/ddqn_adv_2_" + checkpoint_name)
                 last_checkpoint += 1
 
         if args.multi_map is True:
@@ -391,11 +391,11 @@ def run():
     
     if args.train_mode is True:
         if args.transfer_learning is True:
-            torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn1.pt")
-            torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn2.pt")
+            torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_1.pt")
+            torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_2.pt")
         else:
-            torch.save(agent.local_net.state_dict(),args.dir+ "/ddqn1.pt")
-            torch.save(agent.target_net.state_dict(),args.dir+ "/ddqn2.pt")
+            torch.save(agent.local_net.state_dict(),args.dir+ "/ddqn_adv_1.pt")
+            torch.save(agent.target_net.state_dict(),args.dir+ "/ddqn_adv_2.pt")
     env.close()
 
 def play():
