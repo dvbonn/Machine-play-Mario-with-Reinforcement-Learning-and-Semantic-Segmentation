@@ -3,8 +3,8 @@ First, you need to download [ResNet50.pth](https://drive.google.com/file/d/1JRdP
 
 After that, install requirements.txt.
 
-Then, you can train by a simple command like<br>
-```python my_ddqn.py -ss -t -d save_model```<br>
+Then, you can train by a simple command like
+```python my_ddqn.py -ss -t -d save_model```.
 
 To train on a specific map you can using this command<br>
 ```python my_ddqn.py -ss -t -d save_model -lv 5-1```.
@@ -14,7 +14,8 @@ Or multi map<br>
 
 After training, you can play game with the model by this command<br>
 ```python my_ddqn.py -ss -s -d save_model -mn <your model name>```<br>
-or ```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
+or<br>
+```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
 
 To train with transfer learning, add the `-tl` flag :<br>
 ```python my_ddqn.py -ss -t -tl -d save_model -mn <pretrained_model_name>.pt -lv 1-1```.
