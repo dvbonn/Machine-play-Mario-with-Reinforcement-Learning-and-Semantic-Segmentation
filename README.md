@@ -6,18 +6,19 @@ After that, install requirements.txt.
 Then, you can train by a simple command like
 ```python my_ddqn.py -ss -t -d save_model```.
 
-To train on a specific map you can using this command
+To train on a specific map you can using this command<br>
 ```python my_ddqn.py -ss -t -d save_model -lv 5-1```.
 
-Or multi map
+Or multi map<br>
 ```python my_dqqn.py -ss -t -mm -d save_model -lv 1-1 5-1 7-4```.
 
-After training, you can play game with the model by this command
-```python my_ddqn.py -ss -s -d save_model -mn <your model name>```
-or ```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
+After training, you can play game with the model by this command<br>
+```python my_ddqn.py -ss -s -d save_model -mn <your model name>```<br>
+or<br>
+```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
 
-To train with transfer learning, add the `-tl` flag:
-```python my_ddqn.py -ss -t -tl -d save_model -mn <pretrained_model_name>.pt -lv 1-1```
+To train with transfer learning, add the `-tl` flag :<br>
+```python my_ddqn.py -ss -t -tl -d save_model -mn <pretrained_model_name>.pt -lv 1-1```.
 
 Tested on python 3.11.
 
