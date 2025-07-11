@@ -16,6 +16,9 @@ After training, you can play game with the model by this command
 ```python my_ddqn.py -ss -s -d save_model -mn <your model name>```
 or ```python my_ddqn.py -ss -s -d save_model -mn <your model name> -lv 1-1 5-1 7-4``` for multi map.
 
+To train with transfer learning, add the `-tl` flag:
+```python my_ddqn.py -ss -t -tl -d save_model -mn <pretrained_model_name>.pt -lv 1-1```
+
 Tested on python 3.11.
 
 # **About project**
