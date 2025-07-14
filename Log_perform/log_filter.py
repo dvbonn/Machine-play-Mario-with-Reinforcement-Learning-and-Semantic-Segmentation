@@ -1,9 +1,9 @@
 import re
 
-with open("5_1_DQN_TL.txt", "r", encoding="utf-8") as f:
+with open("Log_model/1_1_DDQN_ADV_TL.txt", "r", encoding="utf-8") as f:
     lines = f.readlines()
 
-with open("5_1_DQN_TL.txt", "w", encoding="utf-8") as out:
+with open("Log_model/1_1_DDQN_ADV_TL.txt", "w", encoding="utf-8") as out:
     for line in lines:
         match = re.search(r"episode (\d+) is ([\d\.]+)", line)
         if match:
