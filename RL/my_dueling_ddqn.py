@@ -192,6 +192,8 @@ class DuelingDDQNModel(nn.Module):
 
     def forward(self, x):
         conv_out = self.conv(x).view(x.size()[0], -1)
+        # Dueling Double DQN Q(s, A) = V(s) + A(s, a) - 1/|A| * sum(A(s, a'))
+        # where V(s) is the state value and A(s, a) is the advantage
         value = self.fc_value(conv_out)
         advantage = self.fc_advantage(conv_out)
         qvals = value + advantage - advantage.mean(dim=1, keepdim=True)
