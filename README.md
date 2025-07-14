@@ -1,4 +1,9 @@
-# **How to use**
+# Machine play Mario with Reinforcement-Learning and Semantic Segmentation
+
+[![Generic badge](https://img.shields.io/badge/Made_with-Python-blue.svg)](https://shields.io/)
+[![Generic badge](https://img.shields.io/badge/Made_with-Jupyter_Notebooks-orange.svg)](https://shields.io/)
+
+## **How to use**
 First, you need to download [ResNet50.pth](https://drive.google.com/file/d/1JRdPggs5jTWAXKRXk6hVxzmP-KnOr8Hw/view) and place it in the Segmentation_model folder.
 
 After that, install requirements.txt.
