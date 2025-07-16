@@ -4,6 +4,15 @@
 [![Generic badge](https://img.shields.io/badge/Made_with-Kaggle-orange.svg)](https://shields.io/)
 [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
 
+</p>
+<center>
+<img src="./Images/1-1-mario.gif" width="300">
+<img src="./Images/5-1-mario.gif" width="300">
+</center>
+</p>
+<p>
+    <em>Mario after training.</em>
+</p>
 
 ## **About project**
 Our project focused on how to train a RL agent using SS output as input for RL, so we do not cover training the SS model in this project. 
