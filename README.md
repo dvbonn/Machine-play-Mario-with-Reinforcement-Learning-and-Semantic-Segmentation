@@ -2,7 +2,6 @@
 
 [![Generic badge](https://img.shields.io/badge/Made_with-Python-blue.svg)](https://shields.io/)
 [![Generic badge](https://img.shields.io/badge/Made_with-Kaggle-orange.svg)](https://shields.io/)
-
 [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
 
 
