@@ -8,7 +8,7 @@
   <img src="./Images/1-1-mario.gif" width="300"/>
   <img src="./Images/5-1-mario.gif" width="300"/>
 </p>
-<p>
+<p align="center">
     <em>Mario after training.</em>
 </p>
 
