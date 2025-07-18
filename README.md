@@ -5,8 +5,8 @@
 [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
 
 <p align="center">
-  <img src="path/to/your_first.gif" width="300"/>
-  <img src="path/to/your_second.gif" width="300"/>
+  <img src="./Images/1-1-mario.gif" width="300"/>
+  <img src="./Images/5-1-mario.gif" width="300"/>
 </p>
 <p>
     <em>Mario after training.</em>
