@@ -82,10 +82,7 @@ loss = (y_ddqn - current).pow(2).mean()
 ### 3. Dueling DDQN
 **Q-value calculation with Dueling Architecture**
 ```python
-Q = V(s) + (A(s, a) - A(s, : ).mean(dim=1, keepdim=True))
-```
-***Or***
-```python
+# Q = V(s) + (A(s, a) - A(s, : ).mean(dim=1, keepdim=True))
 value = self.fc_value(conv_out)
 advantage = self.fc_advantage(conv_out)
 qvals = value + advantage - advantage.mean(dim=1, keepdim=True)
@@ -100,9 +97,9 @@ next_q_values = target_net(next_states).gather(1, next_actions)
 expected_q = rewards + gamma * next_q_values * (1 - dones)
 ```
 
-**Loss function (with prioritized replay weights):**
+**Loss function (with prioritized replay weights)**
 ```python
-# loss = (Huber loss giữa q_values và expected_q) * weights
+# loss = (Huber loss between q_values and expected_q) * weights
 loss = (F.smooth_l1_loss(q_values, expected_q.detach(), reduction='none') * weights).mean()
 ```
 ---
