@@ -34,36 +34,77 @@ This step-by-step progression allowed us to analyze the strengths and weaknesses
 
 ### 1. Deep Q-Network (DQN)
 
-The DQN algorithm updates the Q-value using the Bellman equation:
+**The DQN algorithm updates the Q-value using the Bellman equation**
 ```python
 Q[s_t, a_t] = Q[s_t, a_t] + alpha * (r_t + gamma * np.max(Q[s_t1, :]) - Q[s_t, a_t])
 ```
-In practice, the loss function minimized is:
+
+**Target calculation in code**
 ```python
-loss = (r + gamma * target_net(next_state).max(1)[0] - policy_net(state).gather(1, action)).pow(2).mean()
+target = REWARD + gamma * target_net(next_state).max(1)[0].unsqueeze(1) * (1 - done)
+```
+
+**Current Q-value**
+```python
+current = policy_net(state).gather(1, action)
+```
+
+**The loss function**
+```python
+loss = (target - current).pow(2).mean()
 ```
 ---
 
 ### 2. Double DQN (DDQN)
 
-Double DQN reduces overestimation by decoupling action selection and evaluation:
+**Double DQN reduces overestimation by decoupling action selection and evaluation**
 ```python
 next_actions = policy_net(next_state).max(1)[1].unsqueeze(1)
 target_q = target_net(next_state).gather(1, next_actions)
 y_ddqn = reward + gamma * target_q * (1 - done)
 ```
-The loss function is:
+
+**Current Q-value**
+```python
+current = policy_net(state).gather(1, action)
+```
+
+**The loss function**
 ```python
 loss = (y_ddqn - policy_net(state).gather(1, action)).pow(2).mean()
+```
+***Or***
+```python
+loss = (y_ddqn - current).pow(2).mean()
 ```
 ---
 
 ### 3. Dueling DDQN
-
+**Q-value calculation with Dueling Architecture**
 ```python
-# Dueling DQN Q-value calculation
-# V: value stream, A: advantage stream, a: action, s: state
 Q = V(s) + (A(s, a) - A(s, : ).mean(dim=1, keepdim=True))
 ```
+***Or***
+```python
+value = self.fc_value(conv_out)
+advantage = self.fc_advantage(conv_out)
+qvals = value + advantage - advantage.mean(dim=1, keepdim=True)
+```
+
+**Target calculation (Double DQN style)**
+```python
+#next_actions = argmax_a Q_local(s', a)
+next_actions = self.local_net(next_states).argmax(1, keepdim=True)
+#expected_q = r + γ * Q_target(s', next_actions)
+next_q_values = target_net(next_states).gather(1, next_actions)
+expected_q = rewards + gamma * next_q_values * (1 - dones)
+```
+
+**Loss function (with prioritized replay weights):**
+```python
+# loss = (Huber loss giữa q_values và expected_q) * weights
+loss = (F.smooth_l1_loss(q_values, expected_q.detach(), reduction='none') * weights).mean()
+```
 ---
+
 These mathematical formulations are the foundation for the improvements we implemented and tested in our Mario RL
