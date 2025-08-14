@@ -35,47 +35,35 @@ This step-by-step progression allowed us to analyze the strengths and weaknesses
 ### 1. Deep Q-Network (DQN)
 
 The DQN algorithm updates the Q-value using the Bellman equation:
-
-\[
-Q(s_t, a_t) \leftarrow Q(s_t, a_t) + \alpha \left[ r_t + \gamma \max_{a'} Q(s_{t+1}, a') - Q(s_t, a_t) \right]
-\]
-
+```python
+Q[s_t, a_t] = Q[s_t, a_t] + alpha * (r_t + gamma * np.max(Q[s_t1, :]) - Q[s_t, a_t])
+```
 In practice, the loss function minimized is:
-
-\[
-L(\theta) = \mathbb{E}_{(s,a,r,s')} \left[ \left( r + \gamma \max_{a'} Q_{\theta^-}(s', a') - Q_\theta(s, a) \right)^2 \right]
-\]
-
-where \( \theta \) are the parameters of the online network and \( \theta^- \) are the parameters of the target network.
-
+```python
+loss = (r + gamma * target_net(next_state).max(1)[0] - policy_net(state).gather(1, action)).pow(2).mean()
+```
 ---
 
 ### 2. Double DQN (DDQN)
 
 Double DQN reduces overestimation by decoupling action selection and evaluation:
-
-\[
-y^{DDQN} = r + \gamma Q_{\theta^-}\left(s', \arg\max_{a'} Q_\theta(s', a')\right)
-\]
-
+```python
+next_actions = policy_net(next_state).max(1)[1].unsqueeze(1)
+target_q = target_net(next_state).gather(1, next_actions)
+y_ddqn = reward + gamma * target_q * (1 - done)
+```
 The loss function is:
-
-\[
-L(\theta) = \mathbb{E}_{(s,a,r,s')} \left[ \left( y^{DDQN} - Q_\theta(s, a) \right)^2 \right]
-\]
-
+```python
+loss = (y_ddqn - policy_net(state).gather(1, action)).pow(2).mean()
+```
 ---
 
 ### 3. Dueling DDQN
 
-Dueling DDQN separates the estimation of the state value \( V(s) \) and the advantage \( A(s, a) \):
-
-\[
-Q(s, a; \theta, \alpha, \beta) = V(s; \theta, \beta) + \left( A(s, a; \theta, \alpha) - \frac{1}{|\mathcal{A}|} \sum_{a'} A(s, a'; \theta, \alpha) \right)
-\]
-
-where \( \theta \) are the shared parameters, \( \alpha \) and \( \beta \) are parameters of the advantage and value streams, respectively.
-
+```python
+# Dueling DQN Q-value calculation
+# V: value stream, A: advantage stream, a: action, s: state
+Q = V(s) + (A(s, a) - A(s, : ).mean(dim=1, keepdim=True))
+```
 ---
-
 These mathematical formulations are the foundation for the improvements we implemented and tested in our Mario RL
