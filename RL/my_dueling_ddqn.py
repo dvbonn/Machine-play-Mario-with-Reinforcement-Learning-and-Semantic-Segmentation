@@ -24,13 +24,15 @@ parser.add_argument("-s", "--show", help="Show model gameplay", action="store_tr
 parser.add_argument("-lv", "--level", nargs='+',help="Level want to play/train", default=["1-1"])
 parser.add_argument("-ss", "--use_segment", help="Use segmentation or not", action="store_true")
 parser.add_argument("-t", "--train_mode", help="Train or not", action="store_true")
+
 parser.add_argument("--max_exp_r", help="Maximum exploration rate", type=float, default=1.0)
 parser.add_argument("--min_exp_r", help="Minimize exploration rate", type=float, default=0.02)
 parser.add_argument("-e", "--episodes", help="Number of episodes", type=int, default=2500)
-
 parser.add_argument("--relay_buffer", help="Size of experience replay buffer", type=int, default=4000)
-parser.add_argument("-mm", "--multi_map", help="Train multiple maps at once", action="store_true")
+parser.add_argument("-b", "--batch_size", help="Batch size for training", type=int, default=16)
+parser.add_argument("--exp_decay", help="Exploration decay rate", type=float, default=0.99)
 
+parser.add_argument("-mm", "--multi_map", help="Train multiple maps at once", action="store_true")
 parser.add_argument("-tl", "--transfer_learning", help="Transfer learning mode", action="store_true")
 parser.add_argument("-p", "--play", help="Load model to play", action="store_true")
 parser.add_argument("-mn", "--model_name", help="Model want to load", type=str, default="ddqn1.pt")
@@ -314,7 +316,7 @@ def run():
     env = make_env(env)
     observation_space = env.observation_space.shape
     action_space = env.action_space.n
-    agent = DDQNAgent(observation_space, action_space, args.relay_buffer, 16, 0.9, 5e-4, args.max_exp_r, args.min_exp_r, 0.99)
+    agent = DDQNAgent(observation_space, action_space, args.relay_buffer, args.batch_size, 0.9, 5e-4, args.max_exp_r, args.min_exp_r, args.exp_decay)
 
     env.reset()
 
