@@ -26,11 +26,11 @@ parser.add_argument("-ss", "--use_segment", help="Use segmentation or not", acti
 parser.add_argument("-t", "--train_mode", help="Train or not", action="store_true")
 
 parser.add_argument("--max_exp_r", help="Maximum exploration rate", type=float, default=1.0)
-parser.add_argument("--min_exp_r", help="Minimize exploration rate", type=float, default=0.02)
-parser.add_argument("-e", "--episodes", help="Number of episodes", type=int, default=2500)
-parser.add_argument("--relay_buffer", help="Size of experience replay buffer", type=int, default=4000)
-parser.add_argument("-b", "--batch_size", help="Batch size for training", type=int, default=16)
-parser.add_argument("--exp_decay", help="Exploration decay rate", type=float, default=0.99)
+parser.add_argument("--min_exp_r", help="Minimize exploration rate", type=float, default=0.05)
+parser.add_argument("-e", "--episodes", help="Number of episodes", type=int, default=5000)
+parser.add_argument("--relay_buffer", help="Size of experience replay buffer", type=int, default=10000)
+parser.add_argument("-b", "--batch_size", help="Batch size for training", type=int, default=32)
+parser.add_argument("--exp_decay", help="Exploration decay rate", type=float, default=0.995)
 
 parser.add_argument("-mm", "--multi_map", help="Train multiple maps at once", action="store_true")
 parser.add_argument("-tl", "--transfer_learning", help="Transfer learning mode", action="store_true")
@@ -316,14 +316,14 @@ def run():
     env = make_env(env)
     observation_space = env.observation_space.shape
     action_space = env.action_space.n
-    agent = DDQNAgent(observation_space, action_space, args.relay_buffer, args.batch_size, 0.9, 5e-4, args.max_exp_r, args.min_exp_r, args.exp_decay)
+    agent = DDQNAgent(observation_space, action_space, args.relay_buffer, args.batch_size, 0.9, 1e-4, args.max_exp_r, args.min_exp_r, args.exp_decay)
 
     env.reset()
 
     total_rewards = []
     ending_positions = []
 
-    checkpoint_hours = [1, 3, 5, 10, 12]
+    checkpoint_hours = [1, 3, 5, 7, 9, 10, 12]
     checkpoint_seconds = [h * 3600 for h in checkpoint_hours]
     last_checkpoint = 0
     start_time = time.time()
@@ -381,12 +381,19 @@ def run():
             if elapsed_time >= checkpoint_seconds[last_checkpoint]:
                 checkpoint_name = f"checkpoint_{checkpoint_hours[last_checkpoint]}h.pt"
                 if args.transfer_learning is True:
-                    torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_1_" + checkpoint_name)
-                    torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_2_" + checkpoint_name)
+                    torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_3dqn_1_" + checkpoint_name)
+                    torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_3dqn_2_" + checkpoint_name)
                 else:
-                    torch.save(agent.local_net.state_dict(),args.dir+ "/ddqn_adv_1_" + checkpoint_name)
-                    torch.save(agent.target_net.state_dict(),args.dir+ "/ddqn_adv_2_" + checkpoint_name)
+                    torch.save(agent.local_net.state_dict(),args.dir+ "/3dqn_1_" + checkpoint_name)
+                    torch.save(agent.target_net.state_dict(),args.dir+ "/3dqn_2_" + checkpoint_name)
                 last_checkpoint += 1
+
+        #Save log over every checkpoint
+        with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
+            avg_reward = np.mean(total_rewards[-10:])
+            avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
+            f.write(f"Checkpoint {checkpoint_hours[last_checkpoint]}h: episode {episode+1}, avg_reward={avg_reward}, avg_pos={avg_pos}\n")
+        last_checkpoint += 1
 
         if args.multi_map is True:
             next_level = args.level[(episode + 1) % len(args.level)]
@@ -395,11 +402,11 @@ def run():
     
     if args.train_mode is True:
         if args.transfer_learning is True:
-            torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_1.pt")
-            torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_ddqn_adv_2.pt")
+            torch.save(agent.local_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_3dqn_1.pt")
+            torch.save(agent.target_net.state_dict(),args.dir+ "/" + args.model_name + "_tl_3dqn_2.pt")
         else:
-            torch.save(agent.local_net.state_dict(),args.dir+ "/ddqn_adv_1.pt")
-            torch.save(agent.target_net.state_dict(),args.dir+ "/ddqn_adv_2.pt")
+            torch.save(agent.local_net.state_dict(),args.dir+ "/3dqn_1.pt")
+            torch.save(agent.target_net.state_dict(),args.dir+ "/3dqn_2.pt")
     env.close()
 
 def play():
