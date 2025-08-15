@@ -389,10 +389,10 @@ def run():
                 last_checkpoint += 1
 
         #Save log over every checkpoint
+        avg_reward = np.mean(total_rewards[-10:])
+        avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
         with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
-            avg_reward = np.mean(total_rewards[-10:])
-            avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
-            f.write(f"Checkpoint {checkpoint_hours[last_checkpoint]}h: episode {episode+1}, avg_reward={avg_reward}, avg_pos={avg_pos}\n")
+            f.write(f"Checkpoint {[last_checkpoint]}h: episode {episode+1}, avg_reward={avg_reward}, avg_pos={avg_pos}\n")
         last_checkpoint += 1
 
         if args.multi_map is True:
