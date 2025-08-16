@@ -297,7 +297,7 @@ class DDQNAgent:
         expected_q = rewards + self.gamma * next_q_values * (1 - dones)
 
         td_errors = (q_values - expected_q.detach()).abs().detach().cpu().numpy() + 1e-6
-        self.memory.update_priorities(indices, td_errors.flatten())
+        self.memory[current_level].update_priorities(indices, td_errors.flatten())
 
         loss = (F.smooth_l1_loss(q_values, expected_q.detach(), reduction='none') * weights).mean()
         self.optimizer.zero_grad()
@@ -370,7 +370,7 @@ def run():
             #Update state to current one
             state = state_next
 
-            if terminal == True:
+            if terminal.item() == 1:
                 break #End episode loop
 
         #Store rewards and positions. Print total reward after episode.
@@ -388,16 +388,18 @@ def run():
                 else:
                     torch.save(agent.local_net.state_dict(),args.dir+ "/3dqn_1_" + checkpoint_name)
                     torch.save(agent.target_net.state_dict(),args.dir+ "/3dqn_2_" + checkpoint_name)
+
+                #Save log over every checkpoint
+                avg_reward = np.mean(total_rewards[-10:])
+                # avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
+                with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
+                    f.write(f"Checkpoint: {checkpoint_hours[last_checkpoint]}h | episode: {episode+1}, avg_reward={avg_reward}\n")
                 last_checkpoint += 1
 
-        #Save log over every checkpoint
-        avg_reward = np.mean(total_rewards[-10:])
-        avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
-        with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
-            f.write(f"Checkpoint {[last_checkpoint]}h: episode {episode+1}, avg_reward={avg_reward}, avg_pos={avg_pos}\n")
-        last_checkpoint += 1
-
         if args.multi_map is True:
+            env.close()  # Close the current environment
+            
+            # Load the next level environment
             next_level = args.level[(episode + 1) % len(args.level)]
             env = gym_super_mario_bros.make('SuperMarioBros-'+next_level+'-v0')
             env = make_env(env)
