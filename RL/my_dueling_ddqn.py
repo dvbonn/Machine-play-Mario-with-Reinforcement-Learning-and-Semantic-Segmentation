@@ -250,7 +250,8 @@ class DDQNAgent:
         self.target_net = DuelingDDQNModel(state_space, action_space).to(self.device)
         self.target_net.load_state_dict(self.local_net.state_dict())
         self.optimizer = torch.optim.Adam(self.local_net.parameters(), lr=lr)
-        self.memory = PrioritizedReplayBuffer(max_memory_size)
+        self.memory = {level: PrioritizedReplayBuffer(max_memory_size) for level in args.level}
+        # self.memory = PrioritizedReplayBuffer(max_memory_size)
         self.batch_size = batch_size
         self.gamma = gamma
         self.exp_max = exp_max
@@ -261,8 +262,8 @@ class DDQNAgent:
         self.step = 0
         self.ending_position = 0  # Track the ending position in the level
 
-    def remember(self, state, action, reward, next_state, done, info=None):
-        self.memory.push(state.cpu(), action.cpu(), reward.cpu(), next_state.cpu(), done.cpu())
+    def remember(self, state, action, reward, next_state, done, current_level, info=None):
+        self.memory[current_level].push(state.cpu(), action.cpu(), reward.cpu(), next_state.cpu(), done.cpu())
         if info is not None:
             self.ending_position = info.get('x_pos', 0)  # Update ending position if available
 
@@ -279,10 +280,10 @@ class DDQNAgent:
         for target_param, local_param in zip(self.target_net.parameters(), self.local_net.parameters()):
             target_param.data.copy_(self.tau * local_param.data + (1.0 - self.tau) * target_param.data)
 
-    def experience_replay(self, beta=0.4):
-        if len(self.memory) < self.batch_size:
+    def experience_replay(self, current_level, beta=0.4):
+        if len(self.memory[current_level]) < self.batch_size:
             return
-        batch, indices, weights = self.memory.sample(self.batch_size, beta)
+        batch, indices, weights = self.memory[current_level].sample(self.batch_size, beta)
         states = torch.cat(batch[0]).to(self.device)
         actions = torch.cat(batch[1]).long().to(self.device)
         rewards = torch.cat(batch[2]).to(self.device)
@@ -330,6 +331,7 @@ def run():
 
     for episode in tqdm(range(args.episodes)):
                 #Reset state and convert to tensor
+        current_level = args.level[episode % len(args.level)]
         state = env.reset()
         state = torch.Tensor(np.array([state]))
 
@@ -361,9 +363,9 @@ def run():
             ### Actions performed while training:
             if args.train_mode is True:
                 #Add state to experience replay "dataset"
-                agent.remember(state, action, reward, state_next, terminal, info)
+                agent.remember(state, action, reward, state_next, terminal, current_level)
                 #Learn from experience replay.
-                agent.experience_replay()
+                agent.experience_replay(current_level)
 
             #Update state to current one
             state = state_next
