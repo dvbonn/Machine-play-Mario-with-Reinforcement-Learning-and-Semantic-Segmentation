@@ -388,14 +388,13 @@ def run():
                 else:
                     torch.save(agent.local_net.state_dict(),args.dir+ "/3dqn_1_" + checkpoint_name)
                     torch.save(agent.target_net.state_dict(),args.dir+ "/3dqn_2_" + checkpoint_name)
-                last_checkpoint += 1
 
-        #Save log over every checkpoint
-        avg_reward = np.mean(total_rewards[-10:])
-        avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
-        with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
-            f.write(f"Checkpoint {[last_checkpoint]}h: episode {episode+1}, avg_reward={avg_reward}, avg_pos={avg_pos}\n")
-        last_checkpoint += 1
+                #Save log over every checkpoint
+                avg_reward = np.mean(total_rewards[-10:])
+                # avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
+                with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
+                    f.write(f"Checkpoint: {checkpoint_hours[last_checkpoint]}h | episode: {episode+1}, avg_reward={avg_reward}\n")
+                last_checkpoint += 1
 
         if args.multi_map is True:
             next_level = args.level[(episode + 1) % len(args.level)]
