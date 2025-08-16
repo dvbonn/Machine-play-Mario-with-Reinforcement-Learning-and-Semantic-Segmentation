@@ -297,7 +297,7 @@ class DDQNAgent:
         expected_q = rewards + self.gamma * next_q_values * (1 - dones)
 
         td_errors = (q_values - expected_q.detach()).abs().detach().cpu().numpy() + 1e-6
-        self.memory.update_priorities(indices, td_errors.flatten())
+        self.memory[current_level].update_priorities(indices, td_errors.flatten())
 
         loss = (F.smooth_l1_loss(q_values, expected_q.detach(), reduction='none') * weights).mean()
         self.optimizer.zero_grad()
@@ -370,7 +370,7 @@ def run():
             #Update state to current one
             state = state_next
 
-            if terminal == True:
+            if terminal.item() == 1:
                 break #End episode loop
 
         #Store rewards and positions. Print total reward after episode.
@@ -397,6 +397,9 @@ def run():
                 last_checkpoint += 1
 
         if args.multi_map is True:
+            env.close()  # Close the current environment
+            
+            # Load the next level environment
             next_level = args.level[(episode + 1) % len(args.level)]
             env = gym_super_mario_bros.make('SuperMarioBros-'+next_level+'-v0')
             env = make_env(env)
