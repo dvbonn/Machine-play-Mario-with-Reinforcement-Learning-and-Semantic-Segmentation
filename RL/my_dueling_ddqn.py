@@ -28,7 +28,7 @@ parser.add_argument("-t", "--train_mode", help="Train or not", action="store_tru
 parser.add_argument("--max_exp_r", help="Maximum exploration rate", type=float, default=1.0)
 parser.add_argument("--min_exp_r", help="Minimize exploration rate", type=float, default=0.05)
 parser.add_argument("-e", "--episodes", help="Number of episodes", type=int, default=5000)
-parser.add_argument("--relay_buffer", help="Size of experience replay buffer", type=int, default=10000)
+parser.add_argument("--relay_buffer", help="Size of experience replay buffer", type=int, default=50000)
 parser.add_argument("-b", "--batch_size", help="Batch size for training", type=int, default=32)
 parser.add_argument("--exp_decay", help="Exploration decay rate", type=float, default=0.995)
 
