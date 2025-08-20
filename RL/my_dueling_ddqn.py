@@ -376,7 +376,11 @@ def run():
         #Store rewards and positions. Print total reward after episode.
         total_rewards.append(total_reward)
         ending_positions.append(agent.ending_position)
-        print("Total reward after episode {} is {}".format(episode + 1, total_rewards[-1]))
+        if (episode + 1) % 100 == 0:
+            print("Total reward after episode {} is {}".format(episode + 1, total_rewards[-1]))
+
+        with open(os.path.join(args.dir, 'log.txt'), 'a') as f:
+            f.write(f"Episode {episode+1}, Total reward: {total_rewards[-1]}\n")
 
         if args.train_mode is True and last_checkpoint < len(checkpoint_seconds):
             elapsed_time = time.time() - start_time
@@ -388,13 +392,14 @@ def run():
                 else:
                     torch.save(agent.local_net.state_dict(),args.dir+ "/3dqn_1_" + checkpoint_name)
                     torch.save(agent.target_net.state_dict(),args.dir+ "/3dqn_2_" + checkpoint_name)
-
-                #Save log over every checkpoint
-                avg_reward = np.mean(total_rewards[-10:])
-                # avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
-                with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
-                    f.write(f"Checkpoint: {checkpoint_hours[last_checkpoint]}h | episode: {episode+1}, avg_reward={avg_reward}\n")
                 last_checkpoint += 1
+                
+                #Save log over every checkpoint
+                # avg_reward = np.mean(total_rewards[-10:])
+                # avg_pos = np.mean(ending_positions[-10:]) if ending_positions else 0
+                # with open(os.path.join(args.dir, 'rewards.txt'), 'a') as f:
+                #     f.write(f"Checkpoint: {checkpoint_hours[last_checkpoint]}h | episode: {episode+1}, avg_reward={avg_reward}\n")
+                # last_checkpoint += 1
 
         if args.multi_map is True:
             env.close()  # Close the current environment
